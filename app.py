@@ -13,7 +13,7 @@ root.geometry('900x800+300+200')
 root.resizable(False, False)
 root.configure(bg="black")
 
-file = pathlib.Path('Backend_data.xlsx')
+file = pathlib.Path('patient_data.xlsx')
 if file.exists():
     pass
 else:
@@ -29,9 +29,10 @@ else:
     sheet['H1'] = "Past History"
     sheet['I1'] = "Family History"
     sheet['J1'] = "Treatment Date"
-    sheet['K1'] = "Treatment and Fees"
+    sheet['K1'] = "Treatment"
+    sheet['L1'] = "Fees"
 
-    file.save('Backend_data.xlsx')
+    file.save('patient_data.xlsx')
 
 
 def submit():
@@ -44,8 +45,9 @@ def submit():
     cause = causeValue.get()
     pastHistory = pastHistoryValue.get()
     familyHistory = familyHistoryValue.get()
-    treatmentDate = treatmentDateValue.get()
+    treatmentDate = treatmentDateEntry.get()
     treatmentFees = treatmentFeesValue.get()
+    fees = feesValue.get()
 
     if not age.isdigit():
         messagebox.showerror('Error', 'Age must contain only digits.')
@@ -59,7 +61,7 @@ def submit():
         messagebox.showerror('Error', 'Contact number must be a 10-digit number.')
         return
 
-    file = openpyxl.load_workbook('Backend_data.xlsx')
+    file = openpyxl.load_workbook('patient_data.xlsx')
     sheet = file.active
     sheet.cell(column=1, row=sheet.max_row + 1, value=name)
     sheet.cell(column=2, row=sheet.max_row, value=contact)
@@ -72,8 +74,9 @@ def submit():
     sheet.cell(column=9, row=sheet.max_row, value=familyHistory)
     sheet.cell(column=10, row=sheet.max_row, value=treatmentDate)
     sheet.cell(column=11, row=sheet.max_row, value=treatmentFees)
+    sheet.cell(column=12, row=sheet.max_row, value=fees)
 
-    file.save(r'Backend_data.xlsx')
+    file.save(r'patient_data.xlsx')
 
     messagebox.showinfo('info', 'detail added!')
 
@@ -87,6 +90,7 @@ def submit():
     familyHistoryValue.set('')
     treatmentDateValue.set('')
     treatmentFeesValue.set('')
+    feesValue.set('')
 
 
 def clear():
@@ -100,6 +104,7 @@ def clear():
     familyHistoryValue.set('')
     treatmentDateValue.set('')
     treatmentFeesValue.set('')
+    feesValue.set('')
 
 
 def display_selected_date(event):
@@ -125,14 +130,14 @@ Label(root, text='Past History', font=23, bg="green", fg="#fff").place(x=50, y=3
 Label(root, text='Family History', font=23, bg="green", fg="#fff").place(x=50, y=420)
 Label(root, text='Treatment Date', font=23, bg="green", fg="#fff").place(x=50, y=470)
 
-treatmentDateEntry = DateEntry(root, width=30, bd=2, font=20)  
+treatmentDateEntry = DateEntry(root, width=30, bd=2, font=20)
 treatmentDateEntry.place(x=200, y=470)
 treatmentDateEntry.bind("<<DateEntrySelected>>", display_selected_date)
 
 selected_date_label = Label(root, text="Selected Date:", font=23, bg="green", fg="#fff")
 selected_date_label.place(x=200, y=500)
 Label(root, text='Treatment', font=23, bg="green", fg="#fff").place(x=50, y=550)
-
+Label(root, text="Fees", font=23, bg="green", fg="#fff").place(x=50, y=610)
 nameValue = StringVar()
 contactValue = StringVar()
 AgeValue = StringVar()
@@ -142,6 +147,7 @@ pastHistoryValue = StringVar()
 familyHistoryValue = StringVar()
 treatmentDateValue = StringVar()
 treatmentFeesValue = StringVar()
+feesValue = StringVar()
 
 nameEntry = Entry(root, textvariable=nameValue, width=45, bd=2, font=20)
 contactEntry = Entry(root, textvariable=contactValue, width=20, bd=2, font=20)
@@ -151,8 +157,8 @@ causeEntry = Entry(root, textvariable=causeValue, width=45, bd=2, font=20)
 pastHistoryEntry = Entry(root, textvariable=pastHistoryValue, width=45, bd=2, font=20)
 familyHistoryEntry = Entry(root, textvariable=familyHistoryValue, width=45, bd=2, font=20)
 treatmentFeesEntry = Entry(root, textvariable=treatmentFeesValue, width=45, bd=2, font=20)
-
-gender_combobox = Combobox(root, values=['Male', 'Female'], font='arial 14', state='r', width=14)
+feesEntry = Entry(root, textvariable=feesValue, width=10, bd=2, font=20)
+gender_combobox = Combobox(root, values=['Male', 'Female', 'Other'], font='arial 14', state='r', width=14)
 gender_combobox.place(x=480, y=170)
 gender_combobox.set('Male')
 
@@ -167,10 +173,10 @@ pastHistoryEntry.place(x=200, y=370)
 familyHistoryEntry.place(x=200, y=420)
 treatmentFeesEntry.place(x=200, y=550)
 addressEntry.place(x=200, y=270)
-
-Button(root, text="Submit", bg="#326273", fg="white", width=15, height=2, command=submit).place(x=200, y=620)
-Button(root, text="Clear", bg="#326273", fg="white", width=15, height=2, command=clear).place(x=340, y=620)
-Button(root, text="Exit", bg="#326273", fg="white", width=15, height=2, command=lambda: root.destroy()).place(x=480, y=620)
+feesEntry.place(x=200, y=610)
+Button(root, text="Submit", bg="#326273", fg="white", width=15, height=2, command=submit).place(x=200, y=670)
+Button(root, text="Clear", bg="#326273", fg="white", width=15, height=2, command=clear).place(x=340, y=670)
+Button(root, text="Exit", bg="#326273", fg="white", width=15, height=2, command=lambda: root.destroy()).place(x=480, y=670)
 
 # Binding Enter key press event to move focus to next widget
 nameEntry.bind('<Return>', on_enter)
