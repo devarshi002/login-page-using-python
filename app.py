@@ -2,19 +2,21 @@ from tkinter import *
 from tkinter.ttk import Combobox
 from tkinter import Tk, messagebox
 from tkcalendar import DateEntry
+from babel import numbers
 
 import openpyxl
 import pathlib
 from openpyxl import Workbook
+import os
 
 root = Tk()
 root.title("Data Entry")
 root.geometry('900x800+300+200')
-root.resizable(False, False)
+root.resizable(True, True)
 root.configure(bg="black")
 
-file = pathlib.Path('patient_data.xlsx')
-if file.exists():
+file_path = 'patient_data.xlsx'
+if os.path.exists(file_path):
     pass
 else:
     file = Workbook()
@@ -31,9 +33,7 @@ else:
     sheet['J1'] = "Treatment Date"
     sheet['K1'] = "Treatment"
     sheet['L1'] = "Fees"
-
     file.save('patient_data.xlsx')
-
 
 def submit():
     name = nameValue.get()
@@ -75,9 +75,7 @@ def submit():
     sheet.cell(column=10, row=sheet.max_row, value=treatmentDate)
     sheet.cell(column=11, row=sheet.max_row, value=treatmentFees)
     sheet.cell(column=12, row=sheet.max_row, value=fees)
-
     file.save(r'patient_data.xlsx')
-
     messagebox.showinfo('info', 'detail added!')
 
     nameValue.set('')
@@ -92,7 +90,6 @@ def submit():
     treatmentFeesValue.set('')
     feesValue.set('')
 
-
 def clear():
     nameValue.set('')
     contactValue.set('')
@@ -106,38 +103,20 @@ def clear():
     treatmentFeesValue.set('')
     feesValue.set('')
 
-
 def display_selected_date(event):
     selected_date = treatmentDateEntry.get_date()
     selected_date_label.config(text=f"Selected Date: {selected_date}")
-
 
 def on_enter(event):
     event.widget.tk_focusNext().focus()
     return "break"
 
+Label(root, text="PATIENTS DATA ENTRY:", font="arial 20", bg="green", fg="#fff").grid(row=0, column=0, columnspan=2, sticky="ew")
 
-Label(root, text="Please fill out this Entry form:", font="arial 13", bg="green", fg="#fff").place(x=340, y=20)
+labels = ['Name', 'Contact No', 'Age', 'Gender', 'Occupation', 'Address', 'Cause', 'Past History', 'Family History', 'Treatment Date', 'Treatment', 'Fees']
+for idx, label_text in enumerate(labels):
+    Label(root, text=label_text, font='arial 12', bg='green', fg='#fff').grid(row=idx+1, column=0, padx=10, pady=5, sticky='w')
 
-Label(root, text='Name', font=23, bg="green", fg="#fff").place(x=50, y=70)
-Label(root, text='Contact No', font=23, bg="green", fg="#fff").place(x=50, y=120)
-Label(root, text='Age', font=23, bg="green", fg="#fff").place(x=50, y=170)
-Label(root, text='Gender', font=23, bg="green", fg="#fff").place(x=390, y=170)
-Label(root, text='Occupation', font=23, bg="green", fg="#fff").place(x=50, y=220)
-Label(root, text='Address', font=23, bg="green", fg="#fff").place(x=50, y=270)
-Label(root, text='Cause', font=23, bg="green", fg="#fff").place(x=50, y=320)
-Label(root, text='Past History', font=23, bg="green", fg="#fff").place(x=50, y=370)
-Label(root, text='Family History', font=23, bg="green", fg="#fff").place(x=50, y=420)
-Label(root, text='Treatment Date', font=23, bg="green", fg="#fff").place(x=50, y=470)
-
-treatmentDateEntry = DateEntry(root, width=30, bd=2, font=20)
-treatmentDateEntry.place(x=200, y=470)
-treatmentDateEntry.bind("<<DateEntrySelected>>", display_selected_date)
-
-selected_date_label = Label(root, text="Selected Date:", font=23, bg="green", fg="#fff")
-selected_date_label.place(x=200, y=500)
-Label(root, text='Treatment', font=23, bg="green", fg="#fff").place(x=50, y=550)
-Label(root, text="Fees", font=23, bg="green", fg="#fff").place(x=50, y=610)
 nameValue = StringVar()
 contactValue = StringVar()
 AgeValue = StringVar()
@@ -159,24 +138,38 @@ familyHistoryEntry = Entry(root, textvariable=familyHistoryValue, width=45, bd=2
 treatmentFeesEntry = Entry(root, textvariable=treatmentFeesValue, width=45, bd=2, font=20)
 feesEntry = Entry(root, textvariable=feesValue, width=10, bd=2, font=20)
 gender_combobox = Combobox(root, values=['Male', 'Female', 'Other'], font='arial 14', state='r', width=14)
-gender_combobox.place(x=480, y=170)
+gender_combobox.grid(row=4, column=1, padx=10, pady=5, sticky='w')
 gender_combobox.set('Male')
 
 addressEntry = Text(root, width=50, height=2, bd=2)
+nameEntry.grid(row=1, column=1, padx=10, pady=5, sticky='ew')
+contactEntry.grid(row=2, column=1, padx=10, pady=5, sticky='ew')
+ageEntry.grid(row=3, column=1, padx=10, pady=5, sticky='ew')
+occupationEntry.grid(row=5, column=1, padx=10, pady=5, sticky='ew')
+causeEntry.grid(row=7, column=1, padx=10, pady=5, sticky='ew')
+pastHistoryEntry.grid(row=8, column=1, padx=10, pady=5, sticky='ew')
+familyHistoryEntry.grid(row=9, column=1, padx=10, pady=5, sticky='ew')
+treatmentFeesEntry.grid(row=11, column=1, padx=10, pady=5, sticky='ew')
+addressEntry.grid(row=6, column=1, padx=10, pady=5, sticky='ew')
+feesEntry.grid(row=12, column=1, padx=10, pady=5, sticky='ew')
 
-nameEntry.place(x=200, y=70)
-contactEntry.place(x=200, y=120)
-ageEntry.place(x=200, y=170)
-occupationEntry.place(x=200, y=220)
-causeEntry.place(x=200, y=320)
-pastHistoryEntry.place(x=200, y=370)
-familyHistoryEntry.place(x=200, y=420)
-treatmentFeesEntry.place(x=200, y=550)
-addressEntry.place(x=200, y=270)
-feesEntry.place(x=200, y=610)
-Button(root, text="Submit", bg="#326273", fg="white", width=15, height=2, command=submit).place(x=200, y=670)
-Button(root, text="Clear", bg="#326273", fg="white", width=15, height=2, command=clear).place(x=340, y=670)
-Button(root, text="Exit", bg="#326273", fg="white", width=15, height=2, command=lambda: root.destroy()).place(x=480, y=670)
+treatmentDateEntry = DateEntry(root, width=30, bd=2, font=20)
+treatmentDateEntry.grid(row=10, column=1, padx=10, pady=5, sticky='ew')
+treatmentDateEntry.bind("<<DateEntrySelected>>", display_selected_date)
+
+selected_date_label = Label(root, text="Selected Date:", font='arial 12', bg='green', fg='#fff')
+selected_date_label.grid(row=10, column=1, padx=10, pady=5, sticky='w')
+
+Button(root, text="Submit", bg="#326273", fg="white", width=5, height=2, command=submit).grid(row=13, column=0, padx=10, pady=10, sticky='ew')
+Button(root, text="Clear", bg="#326273", fg="white", width=5, height=2, command=clear).grid(row=13, column=1, padx=10, pady=10, sticky='ew')
+Button(root, text="Exit", bg="#326273", fg="white", width=5, height=2, command=root.destroy).grid(row=13, column=2, padx=10, pady=10, sticky='ew')
+
+# Configure rows and columns to resize proportionally
+for i in range(len(labels) + 2):  # +2 for the title row and button row
+    root.grid_rowconfigure(i, weight=1)
+    root.grid_columnconfigure(0, weight=1)
+    root.grid_columnconfigure(1, weight=1)
+    
 
 # Binding Enter key press event to move focus to next widget
 nameEntry.bind('<Return>', on_enter)
